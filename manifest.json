@@ -1,0 +1,6 @@
+ {
+    "name": "Translator",
+    "version": "1.0",
+    "description": "Translate text",
+    "manifest_version": 2
+  }
