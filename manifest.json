@@ -2,5 +2,14 @@
     "name": "Translator",
     "version": "1.0",
     "description": "Translate text",
-    "manifest_version": 2
-  }
+    "manifest_version": 2,
+ 	"browser_action": {
+ 		"default_popup": "popup.html"
+ 	},
+
+ 	"icons": {
+ 		"16": "icon.png",
+ 		"40": "icon.png",
+ 		"128": "icon.png"
+ 	}
+}
