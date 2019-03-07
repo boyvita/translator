@@ -35,6 +35,7 @@ var dbPromise = idb.open("store", 1, function(upgradeDb) {
 
 
 window.addEventListener("DOMContentLoaded", function() {
+<<<<<<< HEAD
     var btn = document.getElementById("button");
     var ru = document.getElementById("result");
     btn.addEventListener("click", function() {
@@ -50,6 +51,21 @@ window.addEventListener("DOMContentLoaded", function() {
                 ru.value = data.text;
             }
         };
+=======
+    document.getElementById("translate").addEventListener("click", function() {
+        let url = "https://translate.yandex.net/api/v1.5/tr.json/translate";
+        let keyAPI = "trnsl.1.1.20190305T001633Z.4a974d95385f5059.a4f67ebbbd3971a1ae2c8c7d5a487b3d9f9de7c7";
+        let request = new XMLHttpRequest();   
+        let source = encodeURIComponent(document.getElementById("source").value);
+        let data = url+"?key="+keyAPI+"&text="+source+"&lang=ru&format=plain";
+        console.log(data);
+        request.open('GET', data, true);
+>>>>>>> test of IndexedDB
         request.send();
+        request.onload = function() {
+            let data = JSON.parse(request.responseText);
+            document.getElementById("result").value = data.text;
+
+        }
     });
 });
