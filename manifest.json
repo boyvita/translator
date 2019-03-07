@@ -3,6 +3,11 @@
     "version": "1.0",
     "description": "Translate text",
     "manifest_version": 2,
+
+    "permissions": [
+    	"storage"
+    ],
+
  	"browser_action": {
  		"default_popup": "popup.html"
  	},
