@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", function() {
         }
         console.log('Created wordsOS');
         wordsOS.createIndex("sourceIndex", "source", {unique: false});
+        wordsOS.createIndex("countIndex", "count", {unique: false});
     } 
 
 
@@ -50,7 +51,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 newItem.count++;
                 console.log("finded this source, changing new item", newItem);
             }
-            //newItem.count++;
             let request = store.put(newItem);
             request.onsuccess = function(e) {
                 console.log("added or changed item: ", newItem);
@@ -68,12 +68,15 @@ window.addEventListener("DOMContentLoaded", function() {
         var tx = db.transaction(["wordsOS"], "readwrite");
         var store = tx.objectStore("wordsOS");
         
-        var index = store.index("sourceIndex");
-        var querry = index.getAll();
-        querry.onerror = errorfunc;
-        querry.onsuccess = function() {
-            console.log(querry.result);
-        }
+        var index = store.index("countIndex");
+
+        index.openCursor(null, "prev").onsuccess = function(e) {    
+            let cursor = event.target.result;
+            if (cursor) {
+                console.log(cursor.value);
+                cursor.continue();
+            }
+        } 
         
         tx.oncomplete = function() {
             console.log('Woot! getting list is finished');

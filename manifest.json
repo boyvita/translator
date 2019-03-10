@@ -4,6 +4,13 @@
     "description": "Translate text",
     "manifest_version": 2,
 
+    "content_script": [
+    	{
+    		"matches": ["<all_urls"],
+    		"js": ["content.js"]
+    	}
+    ],
+
     "permissions": [
     	"storage"
     ],
