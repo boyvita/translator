@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", function() {
         alert();
     }
 
-    indexedDB.deleteDatabase("store");
+    //indexedDB.deleteDatabase("store");
     var db, 
         openRequest = window.indexedDB.open("store", 1),
         index;
@@ -82,6 +82,7 @@ window.addEventListener("DOMContentLoaded", function() {
             console.log('Woot! getting list is finished');
         }
     };
+    
     openRequest.onerror = errorfunc;
 
     openRequest.onsuccess = function(e) {
@@ -104,7 +105,7 @@ window.addEventListener("DOMContentLoaded", function() {
             e.preventDefault();
         });
         document.getElementById("getlist").addEventListener("click", function() {
-            getList();
+            chrome.tabs.create({url: "list.html"});
             e.preventDefault();
         });
     }
