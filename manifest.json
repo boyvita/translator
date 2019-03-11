@@ -6,7 +6,10 @@
     "content_scripts": [
        	{
            "matches": ["<all_urls>"],
-           "js": ["content.js"]
+           "js": ["content.js"],
+
+			"run_at": "document_start",
+			"all_frames": true
        	}
     ],
 
@@ -26,9 +29,13 @@
     		"description": "Translate a word and add it to db"
 	    }
 	},
-
+		
     "permissions": [
-    	"storage", "tabs"
+    	"storage", 
+    	"tabs",
+    	"activeTab",
+		"http://*/*", 
+		"https://*/*"
     ],
 
  	"browser_action": {

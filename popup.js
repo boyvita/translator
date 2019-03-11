@@ -5,6 +5,23 @@ let errorfunc = function(e) {
 
 
 window.addEventListener("DOMContentLoaded", function() {
+    
+    document.getElementById("getlist").addEventListener("click", function() {
+        chrome.tabs.create({url: "list.html"});
+        e.preventDefault();
+    });
+
+    document.getElementById("select").addEventListener("click", function() {
+        chrome.tabs.executeScript( {
+            code: "window.getSelection().toString();"
+        }, function(selection) {
+            document.getElementById('source').value = selection;
+        });
+    });
+
+
+
+
     //check for support
     if (!('indexedDB' in window)) {
         console.log('This browser doesn\'t support IndexedDB');
@@ -104,9 +121,6 @@ window.addEventListener("DOMContentLoaded", function() {
             }
             e.preventDefault();
         });
-        document.getElementById("getlist").addEventListener("click", function() {
-            chrome.tabs.create({url: "list.html"});
-            e.preventDefault();
-        });
+       
     }
 });
