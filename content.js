@@ -1,6 +1,6 @@
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.method == "getSelection")
-    sendResponse({data: window.getSelection().toString()});
-  else
-    sendResponse({}); // snub them.
+console.log("content.js is loaded");
+chrome.extension.onMessage.addListener(function (message, sender, sendRequest) {
+	alert(message.txt);
+	//let div = document.createElement('div');
+	//...
 });

@@ -1,27 +1,20 @@
-function getSelectionText() {
-    var text = "";
-    if (window.getSelection) {
-        text = window.getSelection().toString();
-        console.log("window.getSelection");
-    } else if (document.selection && document.selection.type != "Control") {
-        text = document.selection.createRange().text;
-        console.log("document.selection");
-    }
-    return text;
-}
-
 chrome.commands.onCommand.addListener(function (command) {
     if (command === "translate") {
     	chrome.tabs.executeScript({
-            code: '(' + getSelectionText.toString() + ')()',
+            code: 'window.getSelection().toString()',
             allFrames: true,
             matchAboutBlank: true
         }, function (selection) {
             console.log("selection: " + selection);
-        })
-
-
-	} else if (command === "translate_save") {
-        alert("translate_save: ");
-    }
+        	let params = {
+        		active: true,
+        		currentWindow: true
+        	}
+        	chrome.tabs.query(params, function(tabs) {
+        		let msg = {txt: selection};
+        		chrome.tabs.sendMessage(tabs[0].id, msg);
+        		console.log("sended message", msg);
+        	});
+        });
+	}
 });
