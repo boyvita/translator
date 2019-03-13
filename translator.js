@@ -6,29 +6,30 @@ var errorfunc = function(e) {
 };
 
 var dbPromise = new Promise(function(resolve, reject) {
-    document.addEventListener("DOMContentLoaded", function() {
-        //indexedDB.deleteDatabase("store");
-        var openRequest = window.indexedDB.open("store", 1);
+    //indexedDB.deleteDatabase("store");
+    var openRequest = window.indexedDB.open("store", 1);
 
-        openRequest.onupgradeneeded = function(e) {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains("wordOS")) {
-                wordsOS = db.createObjectStore('wordsOS', {keyPath: "source"});
-            }
-            console.log('Created wordsOS');
-            wordsOS.createIndex("sourceIndex", "source", {unique: false});
-            wordsOS.createIndex("countIndex", "count", {unique: false});
+    openRequest.onupgradeneeded = function(e) {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains("wordOS")) {
+            wordsOS = db.createObjectStore('wordsOS', {keyPath: "source"});
         }
+        console.log('Created wordsOS');
+        wordsOS.createIndex("sourceIndex", "source", {unique: false});
+        wordsOS.createIndex("countIndex", "count", {unique: false});
+    }
 
-        openRequest.onsuccess = function(e) {
-            console.log('Woot! Did it');
-            db = e.target.result;
-            resolve();
-        }
-    }, false);
+    openRequest.onsuccess = function(e) {
+        console.log('Woot! Did it');
+        db = e.target.result;
+        resolve();
+    }
 });
 
 function addWord(source, result) {   
+    chrome.storage.sync.set({"lastSource": source});
+    chrome.storage.sync.set({"lastResult": result});
+
     let tx = db.transaction(["wordsOS"], "readwrite");
     let store = tx.objectStore("wordsOS");
     

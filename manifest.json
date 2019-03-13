@@ -27,13 +27,15 @@
     	"storage", 
     	"tabs",
     	"activeTab",
-		"http://*/*", 
-		"https://*/*"
+    	"contextMenus",
+		"<all_urls>"
     ],
 
  	"browser_action": {
  		"default_popup": "popup.html"
  	},
+
+ 	"options_page": "option.html",
 
  	"icons": {
  		"16": "icon.png",
