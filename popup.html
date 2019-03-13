@@ -3,13 +3,33 @@
 	<head>
 		<script src="translator.js"></script>
 		<script src="popup.js"></script>
+		<style type="text/css">
+			body {
+				background-color: rgb(230, 255, 230);
+			}
+			.container {
+				width: 200px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.container-item {
+				margin: 3px 0px;
+				width: 100%;
+			}
+			button {
+				border-radius: 6px;
+			}
+		</style>
 	</head>
 
 	<body>
-		<input id="select" type="button" value="select">
-		<textarea id="source">word</textarea>
-		<input id="translate" type="button" value="translate">
-		<textarea id="result" name=""></textarea>
-		<input id="getlist" type="button" value="getlist">
+		<div class="container">
+			<button class="container-item" id="select" type="button" width:100%">select</button>
+			<input class="container-item" id="source" type="text">
+			<button class="container-item" id="translate" type="button" >translate</button>
+			<input class="container-item" id="result" type="text">
+			<button class="container-item" id="getlist" type="button">getlist</button>
+		</div>
 	</body>
 </html>

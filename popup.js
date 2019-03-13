@@ -19,13 +19,24 @@ window.onload = function() {
             document.getElementById('source').value = selection;
         });
     });
- 
-    document.getElementById("translate").addEventListener("click", function() {
+    function translateSource() {
         let source = document.getElementById("source").value;
         dbPromise.then(function() {    
             translate(source).then(function(result) {
                 document.getElementById("result").value = result;
             });
         });
+    }
+    chrome.storage.sync.get("enterButton", function(elem) {
+        if (elem.enterButton == true) {
+            document.getElementById('source').addEventListener("keydown", function(e) {
+                if(e.keyCode == 13) {
+                    translateSource();
+                }
+            });
+        }
+    });
+    document.getElementById("translate").addEventListener("click", function() {
+            translateSource();        
     });
 };

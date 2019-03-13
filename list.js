@@ -2,7 +2,6 @@ let errorfunc = function(e) {
     console.log('Error', e.target.error.name, e.target.errorCode)
 }
 
-window.addEventListener("DOMContentLoaded", function() {
 	var db, 
         openRequest = window.indexedDB.open("store", 1),
         index;
@@ -32,5 +31,3 @@ window.addEventListener("DOMContentLoaded", function() {
             console.log('Woot! getting list is finished');
         }
     }
-    
-});
