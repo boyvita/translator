@@ -22,6 +22,7 @@ var dbPromise = new Promise(function(resolve, reject) {
     openRequest.onsuccess = function(e) {
         console.log('Woot! Did it');
         db = e.target.result;
+        console.log("getted db", db);
         resolve();
     }
 });
@@ -29,62 +30,86 @@ var dbPromise = new Promise(function(resolve, reject) {
 function addWord(source, result) {   
     chrome.storage.sync.set({"lastSource": source});
     chrome.storage.sync.set({"lastResult": result});
+    dbPromise.then(function() {
+        let tx = db.transaction(["wordsOS"], "readwrite");
+        let store = tx.objectStore("wordsOS");
+        
+        let item = {
+            source: source,
+            result: result,
+            count: 1,
+            date: new Date().getTime()
+        };
 
-    let tx = db.transaction(["wordsOS"], "readwrite");
-    let store = tx.objectStore("wordsOS");
-    
-    let item = {
-        source: source,
-        result: result,
-        count: 1,
-        date: new Date().getTime()
-    };
-
-    let index = store.index("sourceIndex");
-    var querry = index.get(source);
-    querry.onsuccess = function() {
-        let newItem = querry.result;
-        if (newItem == null) {
-            newItem = item;
-            console.log("there isn't this source, adding new item");
-        } else {
-            newItem.count++;
-            console.log("finded this source, changing new item", newItem);
-        }
-        let request = store.put(newItem);
-        request.onsuccess = function(e) {
-            console.log("added or changed item: ", newItem);
-        }
-        request.onerror = errorfunc;
-        tx.oncomplete = function() {
-            console.log('Woot! Adding or changing item is finished');
-        }
-    }        
-    querry.onerror = errorfunc;
-};
+        let index = store.index("sourceIndex");
+        var querry = index.get(source);
+        querry.onsuccess = function() {
+            let newItem = querry.result;
+            if (newItem == null) {
+                newItem = item;
+                console.log("there isn't this source, adding new item");
+            } else {
+                newItem.count++;
+                console.log("finded this source, changing new item", newItem);
+            }
+            let request = store.put(newItem);
+            request.onsuccess = function(e) {
+                console.log("added or changed item: ", newItem);
+            }
+            request.onerror = errorfunc;
+            tx.oncomplete = function() {
+                console.log('Woot! Adding or changing item is finished');
+            }
+        }        
+        querry.onerror = errorfunc;
+    });
+}
 
 
 function translate(source) {
-    return new Promise(function(resolve, reject) {
-        let url = "https://translate.yandex.net/api/v1.5/tr.json/translate";
-        let keyAPI = "trnsl.1.1.20190305T001633Z.4a974d95385f5059.a4f67ebbbd3971a1ae2c8c7d5a487b3d9f9de7c7";
-        let xhr = new XMLHttpRequest();   
-        let encodeSource = encodeURIComponent(source);
-        let data = url+"?key="+keyAPI+"&text="+encodeSource+"&lang=ru&format=plain";
-        console.log(data);
-        xhr.open('GET', data, true);
-        xhr.onload = function() {
-            console.log("xhr is loaded");
-            if (xhr.status == 200) {
-                let data = JSON.parse(xhr.responseText);
-                console.log(data);
-                addWord(source, data.text);
-                resolve(data.text);
-            } 
+   return new Promise(function(resolve, reject) {
+        dbPromise.then(function() {
+            let url = "https://translate.yandex.net/api/v1.5/tr.json/translate";
+            let keyAPI = "trnsl.1.1.20190305T001633Z.4a974d95385f5059.a4f67ebbbd3971a1ae2c8c7d5a487b3d9f9de7c7";
+            let xhr = new XMLHttpRequest();   
+            let encodeSource = encodeURIComponent(source);
+            let data = url+"?key="+keyAPI+"&text="+encodeSource+"&lang=ru&format=plain";
+            console.log(data);
+            xhr.open('GET', data, true);
+            xhr.onload = function() {
+                console.log("xhr is loaded");
+                if (xhr.status == 200) {
+                    let data = JSON.parse(xhr.responseText);
+                    console.log(data);
+                    addWord(source, data.text);
+                    resolve(data.text);
+                } 
+            }
+            xhr.onerror = function() {
+                reject(new Error("network error"));
+            }
+            xhr.send();
+        });   
+    });
+}
+
+function getList(action) {
+    dbPromise.then(function() {
+        var tx = db.transaction(["wordsOS"], "readwrite");
+        var store = tx.objectStore("wordsOS");
+        
+        var index = store.index("countIndex");
+
+        index.openCursor(null, "prev").onsuccess = function(e) {    
+            let cursor = event.target.result;
+            if (cursor) {
+                action(cursor.value);
+                cursor.continue();
+            }
+        } 
+        
+        tx.oncomplete = function() {
+            console.log('Woot! getting list is finished');
         }
-        xhr.onerror = function() {
-            reject(new Error("network error"));
-        }
-        xhr.send();
-    });   
+    });
 }

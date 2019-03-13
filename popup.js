@@ -1,11 +1,12 @@
 window.onload = function() {
     console.log("document is loaded");
-    chrome.storage.sync.get("lastSource", function(elem) {
-        document.getElementById("source").value = elem.lastSource;
-    });
-
-    chrome.storage.sync.get("lastResult", function(elem) {
-        document.getElementById("result").value = elem.lastResult;
+    chrome.storage.sync.get("saveLastWord", function(elem) {
+        if (elem.saveLastWord == true) {
+            chrome.storage.sync.get(["lastSource", "lastResult"], function(elem) {
+                document.getElementById("source").value = elem.lastSource;
+                document.getElementById("result").value = elem.lastResult;
+            });
+        }
     });
 
     document.getElementById("getlist").addEventListener("click", function() {
@@ -21,10 +22,8 @@ window.onload = function() {
     });
     function translateSource() {
         let source = document.getElementById("source").value;
-        dbPromise.then(function() {    
-            translate(source).then(function(result) {
-                document.getElementById("result").value = result;
-            });
+        translate(source).then(function(result) {
+            document.getElementById("result").value = result;
         });
     }
     chrome.storage.sync.get("enterButton", function(elem) {
@@ -37,6 +36,10 @@ window.onload = function() {
         }
     });
     document.getElementById("translate").addEventListener("click", function() {
-            translateSource();        
+        translateSource();        
     });
+    document.getElementById("ya").addEventListener("click", function() {
+        chrome.tabs.create({url: "http://translate.yandex.com/"});
+    });
+     
 };

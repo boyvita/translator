@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	let enterButton = document.getElementById("enterButton");
 	let countSentences = document.getElementById("countSentences");
 
-
 	chrome.storage.sync.get("saveLastWord", function(elem) {
 		saveLastWord.checked = elem.saveLastWord;
 	});
