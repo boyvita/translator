@@ -4,9 +4,8 @@ chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.sync.set({"lastSource": ""});
     chrome.storage.sync.set({"lastResult": ""});
     chrome.storage.sync.set({"saveLastWord": true});
-    chrome.storage.sync.set({"enterButton": false});
-    chrome.storage.sync.set({"countSentences": true});
-	
+    chrome.storage.sync.set({"enterButton": true});
+    
 	chrome.contextMenus.create({
 		"id": "translate",
 		"title": "translate",
@@ -33,20 +32,18 @@ function translateAtContent(selection) {
 	});
 }
 
-dbPromise.then(function() {
-	chrome.contextMenus.onClicked.addListener(function(clickData) {
-		if (clickData.menuItemId == "translate" && clickData.selectionText) {
-			translateAtContent(clickData.selectionText);
-		}
-	});
+chrome.contextMenus.onClicked.addListener(function(clickData) {
+	if (clickData.menuItemId == "translate" && clickData.selectionText) {
+		translateAtContent(clickData.selectionText);
+	}
+});
 
-	chrome.commands.onCommand.addListener(function (command) {
-	    if (command === "translate") {
-	    	chrome.tabs.executeScript({
-	            code: 'window.getSelection().toString()',
-	        }, function(selection) {
-	        	translateAtContent(selection);
-	        });
-		}
-	});
+chrome.commands.onCommand.addListener(function (command) {
+    if (command === "translate") {
+    	chrome.tabs.executeScript({
+            code: 'window.getSelection().toString()',
+        }, function(selection) {
+        	translateAtContent(selection);
+        });
+	}
 });

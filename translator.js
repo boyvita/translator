@@ -94,3 +94,13 @@ function getList(callback) {
         }
     });
 }
+
+function clearHistory() {
+    let tx = db.transaction(["wordsOS"], "readwrite");
+    let wordsOS = tx.objectStore("wordsOS");
+    wordsOS.clear();
+    tx.oncomplete = function() {
+        console.log('Woot! getting list is finished');
+    }
+    return tx.complete;
+}
